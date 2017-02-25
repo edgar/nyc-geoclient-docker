@@ -1,9 +1,13 @@
-GIT_COMMIT ?= $(shell git rev-parse --verify HEAD)
+NAME = edgargonzalez/nyc-geoclient
+VERSION = 2.0.0-rc.1
 
 .PHONY: build
 build:
-	docker build \
-		--build-arg GIT_COMMIT=${GIT_COMMIT} \
-		-t edgargonzalez/nyc-geoclient-2.0.0-rc.1:latest \
-    -t edgargonzalez/nyc-geoclient-2.0.0-rc.1:${GIT_COMMIT} \
-    .
+	docker build -t $(NAME):latest -t $(NAME):$(VERSION) .
+
+.PHONY: release
+release:
+	@if ! docker images $(NAME) | awk '{ print $$2 }' | grep -q -F $(VERSION); then echo "$(NAME) version $(VERSION) is not yet built. Please run 'make build'"; false; fi
+	@if ! head -n 1 Changelog.md | grep -q 'release date'; then echo 'Please note the release date in Changelog.md.' && false; fi
+	docker push $(NAME)
+	@echo "*** Don't forget to create a tag. git tag rel-$(VERSION) && git push origin rel-$(VERSION)"
