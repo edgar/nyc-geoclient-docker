@@ -8,12 +8,12 @@ RUN mkdir /app/
 WORKDIR /app/
 
 # Get the latest Geosupport
-RUN wget http://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/gdelx16b.zip \
-    && unzip gdelx16b.zip \
-    && rm gdelx16b.zip
+RUN wget http://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/gdelx_18a.zip \
+    && unzip gdelx_18a.zip \
+    && rm gdelx_18a.zip
 
 # Set some paths
-ENV GEOSUPPORT_HOME=/app/version-16b_16.2 \
+ENV GEOSUPPORT_HOME=/app/version-18a_18.1 \
     JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 ENV LD_LIBRARY_PATH=$GEOSUPPORT_HOME/lib/ \
     GEOFILES=$GEOSUPPORT_HOME/fls/ \
@@ -31,7 +31,6 @@ RUN git clone https://github.com/bhagyas/spring-jsonp-support \
 RUN git clone https://github.com/CityOfNewYork/geoclient.git \
     && ( cd geoclient \
          && git checkout 2.0.0-rc.1 \
-#        && patch -p1 < /app/geoclient-build.patch \
          && ./gradlew build -x test )
 
 # Cleanup unused files
